@@ -1,0 +1,28 @@
+import cv2
+import os
+
+def create_timelapse(image_folder, output_folder, video_name, fps):
+    images = [img for img in os.listdir(image_folder) if img.endswith(".jpg")]
+    images.sort()  # Sort the images by name
+
+    # Assuming all images are the same size, get dimensions of the first image
+    frame = cv2.imread(os.path.join(image_folder, images[0]))
+    height, width, layers = frame.shape
+
+    # Define the codec and create VideoWriter object
+    fourcc = cv2.VideoWriter_fourcc(*'mp4v')  # 'mp4v' for .mp4 output
+    video = cv2.VideoWriter(os.path.join(output_folder, video_name + '.mp4'), fourcc, fps, (width, height))
+
+    for image in images:
+        video.write(cv2.imread(os.path.join(image_folder, image)))
+
+    cv2.destroyAllWindows()
+    video.release()
+
+# Example usage
+image_folder = 'path/to/your/images'  # Path to the folder containing your images
+output_folder = 'path/to/output/folder'  # Path where you want to save the timelapse video
+video_name = 'my_timelapse'  # Name of the output video file
+fps = 24  # Frames per second
+
+create_timelapse(image_folder, output_folder, video_name, fps)
